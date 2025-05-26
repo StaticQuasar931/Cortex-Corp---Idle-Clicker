@@ -1,1 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cortex Corp - Idle Clicker Game</title>
+  <meta name="description" content="Play Cortex Corp, an exponential idle clicker game where you generate Cortex Power and grow your futuristic company. Works at school and on GitHub!">
+  <meta name="keywords" content="idle game, unblocked clicker game, cortex corp, exponential tycoon, browser game, google sites compatible, github game, fun after finals, offline save, cortex power game, idle tycoon unblocked, google sites idle game">
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #1e1e2f;
+      color: #fff;
+      text-align: center;
+    }
+    h1 {
+      margin-top: 20px;
+      color: #00e6e6;
+    }
+    .container {
+      max-width: 700px;
+      margin: auto;
+      padding: 20px;
+      background: #2b2b3d;
+      border-radius: 12px;
+      box-shadow: 0 0 20px #00e6e655;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 1rem;
+      margin: 10px;
+      background: #00e6e6;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      color: #000;
+      transition: 0.3s;
+    }
+    button:hover {
+      background: #00bfbf;
+    }
+    .stats {
+      font-size: 1.1rem;
+      margin: 10px 0;
+    }
+    .section {
+      margin-top: 30px;
+    }
+    .upgrade, .worker {
+      background: #393951;
+      margin: 8px 0;
+      padding: 10px;
+      border-radius: 6px;
+    }
+    .hidden-seo {
+      color: transparent;
+      font-size: 0.01px;
+      height: 0;
+      width: 0;
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🧠 Cortex Corp</h1>
+    <div class="stats">
+      <p><strong>Cortex Power:</strong> <span id="power">0</span></p>
+      <p><strong>Per Second:</strong> <span id="perSec">0</span> | <strong>Multiplier:</strong> x<span id="multi">1</span></p>
+    </div>
 
+    <button onclick="generate()">Generate Power</button>
+
+    <div class="section">
+      <h2>🔧 Upgrades</h2>
+      <div class="upgrade"><button onclick="buyUpgrade('boost')">Boost Output (Cost: <span id="boostCost">50</span>)</button></div>
+      <div class="upgrade"><button onclick="buyUpgrade('multi')">Double Multiplier (Cost: <span id="multiCost">250</span>)</button></div>
+    </div>
+
+    <div class="section">
+      <h2>🤖 Auto Generators</h2>
+      <div class="worker"><button onclick="buyWorker()">Hire Bot (x<span id="bots">0</span>) - Cost: <span id="botCost">100</span></button></div>
+    </div>
+
+    <div class="section">
+      <h2>🌟 Prestige</h2>
+      <button onclick="prestige()">Reset for Boost (Requires 1000 Power)</button>
+    </div>
+    
+    <div class="section">
+      <p><button onclick="saveGame()">💾 Save</button> <button onclick="resetGame()">🗑️ Reset</button></p>
+      <p style="font-size: 0.8rem; color: #aaa;">Progress autosaves every 10 seconds.</p>
+    </div>
+
+    <p style="margin-top: 20px; font-size: 0.8rem;">Made by <a href="https://sites.google.com/view/staticquasar931" style="color:#00e6e6;">Static</a></p>
+  </div>
+
+  <div class="hidden-seo">
+    Cortex Corp idle clicker game unblocked exponential tycoon play at school GitHub offline cortex power multiplier idle prestige bots upgrades save game fun game google compatible cortexcorp idleplay
+  </div>
+
+  <script>
+    let game = {
+      power: 0,
+      perClick: 1,
+      bots: 0,
+      multi: 1,
+      boostCost: 50,
+      multiCost: 250,
+      botCost: 100
+    };
+
+    function generate() {
+      game.power += game.perClick * game.multi;
+      update();
+    }
+
+    function buyUpgrade(type) {
+      if (type === 'boost' && game.power >= game.boostCost) {
+        game.power -= game.boostCost;
+        game.perClick *= 2;
+        game.boostCost = Math.floor(game.boostCost * 2.5);
+      } else if (type === 'multi' && game.power >= game.multiCost) {
+        game.power -= game.multiCost;
+        game.multi *= 2;
+        game.multiCost = Math.floor(game.multiCost * 3.25);
+      }
+      update();
+    }
+
+    function buyWorker() {
+      if (game.power >= game.botCost) {
+        game.power -= game.botCost;
+        game.bots += 1;
+        game.botCost = Math.floor(game.botCost * 2);
+      }
+      update();
+    }
+
+    function prestige() {
+      if (game.power >= 1000) {
+        game.multi += 1;
+        game.power = 0;
+        game.perClick = 1;
+        game.bots = 0;
+        game.boostCost = 50;
+        game.multiCost = 250;
+        game.botCost = 100;
+        update();
+      }
+    }
+
+    function update() {
+      document.getElementById('power').textContent = Math.floor(game.power);
+      document.getElementById('perSec').textContent = game.bots * game.multi;
+      document.getElementById('multi').textContent = game.multi;
+      document.getElementById('bots').textContent = game.bots;
+      document.getElementById('boostCost').textContent = game.boostCost;
+      document.getElementById('multiCost').textContent = game.multiCost;
+      document.getElementById('botCost').textContent = game.botCost;
+    }
+
+    function saveGame() {
+      localStorage.setItem("cortexSave", JSON.stringify(game));
+    }
+
+    function loadGame() {
+      let saved = localStorage.getItem("cortexSave");
+      if (saved) game = JSON.parse(saved);
+      update();
+    }
+
+    function resetGame() {
+      if (confirm("Reset all progress?")) {
+        localStorage.removeItem("cortexSave");
+        location.reload();
+      }
+    }
+
+    setInterval(() => {
+      game.power += game.bots * game.multi;
+      update();
+    }, 1000);
+
+    setInterval(saveGame, 10000);
+    window.onload = loadGame;
+  </script>
+</body>
+</html>
